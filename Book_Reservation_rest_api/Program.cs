@@ -1,9 +1,7 @@
+using Book_Reservation_rest_api.DBContext;
 using Microsoft.EntityFrameworkCore;
-using System.Configuration;
-using Microsoft.EntityFrameworkCore.Sqlite;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using Book_Reservation_rest_api.DBContext;
 
 var builder = WebApplication.CreateBuilder(args);
 

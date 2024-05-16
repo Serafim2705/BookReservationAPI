@@ -21,4 +21,14 @@
         }
     }
 
+    public class GetHistoryResponse
+    {
+        public DateTime Date { get; set; }
+        public string? Comment { get; set; }
+
+        public bool IsReserved { get; set; }
+
+
+    }
+
 }

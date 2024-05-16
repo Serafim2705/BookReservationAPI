@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace Book_Reservation_rest_api.Models
 {
@@ -19,11 +18,11 @@ namespace Book_Reservation_rest_api.Models
         public string? Comment { get; set; }
         public StatusBook() { }
 
-        public StatusBook(long book_id, DateTime date, bool is_reserved, string? comment) 
+        public StatusBook(long book_id, DateTime date, bool is_reserved, string? comment)
         {
-            
+
             BookId = book_id;
-            Date = date;    
+            Date = date;
             IsReserved = is_reserved;
             Comment = comment;
 

@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Book_Reservation_rest_api.DBContext;
+using Book_Reservation_rest_api.Models;
+using Book_Reservation_rest_api.Schemes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Book_Reservation_rest_api.Models;
-using System.Text.Json.Serialization;
-using Swashbuckle.AspNetCore.Annotations;
-using Book_Reservation_rest_api.Schemes;
-using Book_Reservation_rest_api.DBContext;
 
 namespace Book_Reservation_rest_api.Controllers
 {
@@ -85,7 +78,7 @@ namespace Book_Reservation_rest_api.Controllers
         }
 
         // POST: api/Books
-        
+
         /// <summary>
         /// Create a new Book.
         /// </summary>

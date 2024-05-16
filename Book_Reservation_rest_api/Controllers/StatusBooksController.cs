@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Book_Reservation_rest_api.DBContext;
+using Book_Reservation_rest_api.Models;
+using Book_Reservation_rest_api.Schemes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Book_Reservation_rest_api.Models;
-using NuGet.Protocol.Plugins;
-using Microsoft.Data.SqlClient;
-using Azure.Core;
-using System.Collections;
-using Book_Reservation_rest_api.Schemes;
-using Book_Reservation_rest_api.DBContext;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Book_Reservation_rest_api.Controllers
@@ -34,7 +25,7 @@ namespace Book_Reservation_rest_api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetBookResponse>>> GetStatusOfBooks([FromQuery] bool reserved = false)
         {
-            
+
             var isReservedParam = new Microsoft.Data.Sqlite.SqliteParameter("IsReservedParam", reserved);
 
 
@@ -79,21 +70,32 @@ namespace Book_Reservation_rest_api.Controllers
         /// Get history of specific book's status.
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<StatusBook>>> GetStatusBook(long id)
+        public async Task<ActionResult<IEnumerable<GetHistoryResponse>>> GetStatusBook(long id)
         {
-            var statuses_Book = await _context.StatusOfBooks.Include(p=>p.Book).Where(m => m.BookId == id).OrderByDescending(m => m.Date).ToListAsync();
+            var statuses_Book = await _context.StatusOfBooks
+                //.Include(p=>p.Book)
+                .Where(m => m.BookId == id)
+                .OrderByDescending(m => m.Date)
+                .ToListAsync();
 
             if (statuses_Book.IsNullOrEmpty())
             {
                 return NotFound();
             }
 
+            IEnumerable<GetHistoryResponse> ResponseBody = statuses_Book.Select(a => new GetHistoryResponse
+            {
+                // Тут вы можете скопировать данные из объекта ClassA в новый объект ClassB
+                Date = a.Date,
+                Comment = a.Comment,
+                IsReserved = a.IsReserved
+            });
 
-            return statuses_Book;
+            return Ok(ResponseBody);
         }
 
         // POST: api/StatusBooksCreate
-        
+
         /// <summary>
         /// Create a new reservation record.
         /// </summary>
@@ -112,11 +114,11 @@ namespace Book_Reservation_rest_api.Controllers
 
             if (book == null)
             {
-                return BadRequest("Не найдена книга с указанным ид");
+                return NotFound();
             }
 
             var cur_status = _context.StatusOfBooks.Where(m => m.BookId == request.BookId).OrderByDescending(m => m.Date).FirstOrDefault();
-            
+
             if (cur_status == null)
             {
                 return StatusCode(500, "Внутренняя ошибка сервера");
@@ -126,7 +128,7 @@ namespace Book_Reservation_rest_api.Controllers
             {
                 return BadRequest("Книга уже зарезервирована");
             }
-            
+
 
             var new_status = new StatusBook(request.BookId, DateTime.Now, true, request.Comment);
 
@@ -135,13 +137,13 @@ namespace Book_Reservation_rest_api.Controllers
             await _context.SaveChangesAsync();
             Console.WriteLine(new_status.BookId);
 
-            return CreatedAtAction("GetStatusBook", new { Id = new_status.BookId , Date = new_status.Date }, new_status);
+            return CreatedAtAction("GetStatusBook", new { Id = new_status.BookId, Date = new_status.Date }, new_status);
         }
 
 
 
         // POST: api/PostStatusBookCancelation
-        
+
         /// <summary>
         /// Create book cancellation request.
         /// </summary>
@@ -151,18 +153,18 @@ namespace Book_Reservation_rest_api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<StatusBook>> PostStatusBookCancelation(CustomPostChangeStatus request)
         {
-            if (!ModelState.IsValid || request.BookId==0)
+            if (!ModelState.IsValid || request.BookId == 0)
             {
-                
+
                 return BadRequest(ModelState);
             }
 
 
             var book = await _context.Books.FindAsync(request.BookId);
 
-            if (book == null )
+            if (book == null)
             {
-                return BadRequest("Не найдена книга с указанным ид");
+                return NotFound();
             }
 
             var cur_status = _context.StatusOfBooks.Where(m => m.BookId == request.BookId).OrderByDescending(m => m.Date).FirstOrDefault();

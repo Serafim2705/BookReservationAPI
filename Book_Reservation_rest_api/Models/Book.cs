@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using Swashbuckle.AspNetCore;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Book_Reservation_rest_api.Models
 {
