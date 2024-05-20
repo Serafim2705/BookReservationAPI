@@ -103,7 +103,6 @@ namespace Book_Reservation_rest_api.Controllers
             await _context.SaveChangesAsync();
             var status_for_new_book = new StatusBook(new_book.Id, DateTime.Now, false, "Добавлена новая книга");
             _context.StatusOfBooks.Add(status_for_new_book);
-            //new StatusBook(book.Id, DateTime.Now, false, "some comment")
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetBook", new { id = new_book.Id }, new_book);

@@ -19,7 +19,6 @@ namespace Book_Reservation_rest_api.DBContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<StatusBook>()
-                //.HasNoKey();
                 .HasKey(hnk => new { hnk.Date, hnk.BookId });
         }
 

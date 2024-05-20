@@ -73,7 +73,6 @@ namespace Book_Reservation_rest_api.Controllers
         public async Task<ActionResult<IEnumerable<GetHistoryResponse>>> GetStatusBook(long id)
         {
             var statuses_Book = await _context.StatusOfBooks
-                //.Include(p=>p.Book)
                 .Where(m => m.BookId == id)
                 .OrderByDescending(m => m.Date)
                 .ToListAsync();
@@ -85,7 +84,6 @@ namespace Book_Reservation_rest_api.Controllers
 
             IEnumerable<GetHistoryResponse> ResponseBody = statuses_Book.Select(a => new GetHistoryResponse
             {
-                // Тут вы можете скопировать данные из объекта ClassA в новый объект ClassB
                 Date = a.Date,
                 Comment = a.Comment,
                 IsReserved = a.IsReserved
